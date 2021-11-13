@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
@@ -23,7 +22,7 @@ const (
 )
 
 type Task struct {
-	ID          uuid.UUID    `json:"id"`
+	ID          uint64       `json:"id"`
 	Description string       `json:"description"`
 	Priority    TaskPriority `json:"priority"`
 	Status      TaskStatus   `json:"status"`

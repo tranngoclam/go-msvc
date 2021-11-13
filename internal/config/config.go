@@ -13,25 +13,29 @@ var (
 
 // Config defines configuration using composite pattern
 type Config struct {
-	sv  Server
+	srv Server
 	db  Database
 	tel Telemetry
 }
 
 type Server struct {
-	Port int `env:"SERVER_PORT"`
+	Port uint `env:"SERVER_PORT"`
+}
+
+func (s Server) Addr() string {
+	return ":" + s.Port
 }
 
 type Database struct {
 	Host     string `env:"DB_HOST, default=localhost"`
-	Port     int    `env:"DB_PORT, default=3306"`
+	Port     uint   `env:"DB_PORT, default=3306"`
 	User     string `env:"DB_USER"`
 	Password string `env:"DB_PASSWORD" json:"-"`
 	Name     string `env:"DB_NAME"`
 }
 
 type Telemetry struct {
-	PprofPort int `env:"PPROF_PORT, default=-1"`
+	PprofPort uint `env:"PPROF_PORT, default=-1"`
 }
 
 // New loads configuration from env and return Config,
@@ -62,4 +66,8 @@ func (c Config) Database() Database {
 
 func (c Config) Telemetry() Telemetry {
 	return c.tel
+}
+
+func (c Config) Server() Server {
+	return c.srv
 }

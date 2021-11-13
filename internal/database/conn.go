@@ -20,8 +20,7 @@ type DB struct {
 
 // New constructs gorm db object from database configuration
 // TODO: customize gorm configuration
-func New(ctx context.Context, cfg config.Config) (*DB, error) {
-	dbCfg := cfg.Database()
+func New(ctx context.Context, dbCfg config.Database) (*DB, error) {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		dbCfg.User, dbCfg.Password, dbCfg.Host, dbCfg.Port, dbCfg.Name)
 	gDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -29,15 +28,30 @@ func New(ctx context.Context, cfg config.Config) (*DB, error) {
 		return nil, ErrOpenDB
 	}
 
-	sDB, err := gDB.DB()
-	if err != nil {
-		return nil, err
-	}
-
-	err = sDB.PingContext(ctx)
+	db := &DB{db: gDB}
+	err = db.Ping(ctx)
 	if err != nil {
 		return nil, ErrPingDB
 	}
 
-	return &DB{db: gDB}, nil
+	return db, nil
+}
+
+func (db *DB) Ping(ctx context.Context) error {
+	sDB, err := db.db.DB()
+	if err != nil {
+		return err
+	}
+
+	return sDB.PingContext(ctx)
+}
+
+// Close retrieves sql/database instance and closes all connections to the database
+func (db *DB) Close() error {
+	sDB, err := db.db.DB()
+	if err != nil {
+		return err
+	}
+
+	return sDB.Close()
 }
