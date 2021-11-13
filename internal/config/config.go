@@ -19,23 +19,25 @@ type Config struct {
 }
 
 type Server struct {
-	Port uint `env:"SERVER_PORT"`
+	Port string `env:"SERVER_PORT"`
 }
 
 func (s Server) Addr() string {
 	return ":" + s.Port
 }
 
+// Database defines configuration for database
 type Database struct {
 	Host     string `env:"DB_HOST, default=localhost"`
-	Port     uint   `env:"DB_PORT, default=3306"`
-	User     string `env:"DB_USER"`
-	Password string `env:"DB_PASSWORD" json:"-"`
-	Name     string `env:"DB_NAME"`
+	Port     string `env:"DB_PORT, default=3306"`
+	User     string `env:"DB_USER, default=todo"`
+	Password string `env:"DB_PASSWORD, default=password" json:"-"`
+	Name     string `env:"DB_NAME, default=todo"`
 }
 
+// Telemetry defines configuration for telemetry
 type Telemetry struct {
-	PprofPort uint `env:"PPROF_PORT, default=-1"`
+	PprofPort string `env:"PPROF_PORT, default=-1"`
 }
 
 // New loads configuration from env and return Config,
@@ -43,17 +45,22 @@ type Telemetry struct {
 func New(ctx context.Context) (Config, error) {
 	var (
 		cfg Config
+		srv Server
 		db  Database
 		tel Telemetry
 	)
 
+	if err := envconfig.Process(ctx, &srv); err != nil {
+		return cfg, fmt.Errorf("%+v, server", ErrProcessConfig)
+	}
 	if err := envconfig.Process(ctx, &db); err != nil {
-		return cfg, fmt.Errorf("%+v, telemetry", ErrProcessConfig)
+		return cfg, fmt.Errorf("%+v, database", ErrProcessConfig)
 	}
 	if err := envconfig.Process(ctx, &tel); err != nil {
 		return cfg, fmt.Errorf("%+v, telemetry", ErrProcessConfig)
 	}
 
+	cfg.srv = srv
 	cfg.db = db
 	cfg.tel = tel
 

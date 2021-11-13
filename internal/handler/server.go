@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/tranngoclam/go-msvc/internal/config"
 	"github.com/tranngoclam/go-msvc/internal/database"
-	"log"
 	"net/http"
 	"time"
 )
@@ -20,8 +19,6 @@ func NewServer(
 	ctx context.Context,
 	cfg config.Config,
 ) (*Server, error) {
-	http.Lis
-
 	db, err := database.New(ctx, cfg.Database())
 	if err != nil {
 		return nil, err
@@ -52,10 +49,8 @@ func (s *Server) Serve(ctx context.Context) error {
 		errCh <- srv.Shutdown(shutdownCtx)
 	}()
 
-	http.ListenAndServe(s.config.)
-
-	if err := srv.Serve(s.listener); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		return fmt.Errorf("failed to serve: %w", err)
+	if err := http.ListenAndServe(s.config.Server().Addr(), s.handler.mux); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		return err
 	}
 
 	if err := <-errCh; err != nil {

@@ -24,12 +24,12 @@ func TestConfig_New(t *testing.T) {
 	db := cfg.Database()
 	require.NotNil(t, db)
 	require.Equal(t, "mysql.cloud.example.com", db.Host)
-	require.Equal(t, 3306, db.Port)
+	require.Equal(t, "3306", db.Port)
 	require.Equal(t, user, db.User)
 	require.Equal(t, password, db.Password)
 	require.Equal(t, "go-msvc", db.Name)
 
 	tm := cfg.Telemetry()
 	require.NotNil(t, tm)
-	require.Equal(t, 9207, tm.PprofPort)
+	require.Equal(t, "9207", tm.PprofPort)
 }

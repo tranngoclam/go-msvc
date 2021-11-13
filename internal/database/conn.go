@@ -21,9 +21,9 @@ type DB struct {
 // New constructs gorm db object from database configuration
 // TODO: customize gorm configuration
 func New(ctx context.Context, dbCfg config.Database) (*DB, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		dbCfg.User, dbCfg.Password, dbCfg.Host, dbCfg.Port, dbCfg.Name)
-	gDB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	gDB, err := gorm.Open(mysql.Open(dsn))
 	if err != nil {
 		return nil, ErrOpenDB
 	}
@@ -37,6 +37,7 @@ func New(ctx context.Context, dbCfg config.Database) (*DB, error) {
 	return db, nil
 }
 
+// Ping performs a ping command to the database
 func (db *DB) Ping(ctx context.Context) error {
 	sDB, err := db.db.DB()
 	if err != nil {

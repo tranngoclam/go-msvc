@@ -1,2 +1,11 @@
 # go-msvc
-Microservice Template in Golang
+
+(opinionated) Microservice Template in Golang
+
+## Structure
+
+## Development
+
+## Testing
+
+## Deployment

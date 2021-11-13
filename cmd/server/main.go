@@ -9,6 +9,7 @@ import (
 
 func main() {
 	ctx := context.Background()
+
 	cfg, err := config.New(ctx)
 	if err != nil {
 		log.Fatalln(err)
@@ -19,5 +20,8 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	srv.Serve(ctx)
+	err = srv.Serve(ctx)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
