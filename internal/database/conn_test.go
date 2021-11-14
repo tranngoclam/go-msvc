@@ -18,4 +18,8 @@ func TestNew(t *testing.T) {
 	db, err := New(ctx, cfg.Database())
 	require.NoError(t, err)
 	require.NotNil(t, db)
+	t.Cleanup(func() { require.NoError(t, db.Close()) })
+
+	err = db.Ping(ctx)
+	require.NoError(t, err)
 }

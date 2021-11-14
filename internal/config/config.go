@@ -30,12 +30,13 @@ func (s Server) Addr() string {
 type Database struct {
 	Host     string `env:"DB_HOST, default=localhost"`
 	Port     string `env:"DB_PORT, default=3306"`
-	User     string `env:"DB_USER, default=todo"`
+	User     string `env:"DB_USER, default=root"`
 	Password string `env:"DB_PASSWORD, default=password" json:"-"`
 	Name     string `env:"DB_NAME, default=todo"`
 }
 
 // Telemetry defines configuration for telemetry
+// TODO: listen this port for pprof
 type Telemetry struct {
 	PprofPort string `env:"PPROF_PORT, default=-1"`
 }
@@ -67,14 +68,17 @@ func New(ctx context.Context) (Config, error) {
 	return cfg, nil
 }
 
+// Database gets database property
 func (c Config) Database() Database {
 	return c.db
 }
 
+// Telemetry gets telemetry property
 func (c Config) Telemetry() Telemetry {
 	return c.tel
 }
 
+// Server gets server property
 func (c Config) Server() Server {
 	return c.srv
 }

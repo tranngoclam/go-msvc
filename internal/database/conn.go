@@ -9,11 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// Global errors for database package
 var (
 	ErrOpenDB = errors.New("db: cannot open database")
 	ErrPingDB = errors.New("db: cannot ping to database")
 )
 
+// DB wraps the gorm.DB instance
 type DB struct {
 	db *gorm.DB
 }
